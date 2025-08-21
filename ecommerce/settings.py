@@ -1,6 +1,8 @@
 import os
 
 from pathlib import Path
+from decouple import config, Csv
+
 
 LOGIN_URL = '/auth/login/'
 
@@ -136,6 +138,6 @@ ESEWA_MERCHANT_ID = "EPAYTEST"  # Test merchant ID, replace in production
 # khalti
 # === Khalti Sandbox (use dev.khalti.com) ===
 KHALTI_IS_SANDBOX = True  # True = dev sandbox, False = live
-KHALTI_SECRET_KEY = "41ccb2961e6049d29a54aa84432b44da"  # from Khalti sandbox docs
+KHALTI_SECRET_KEY = config('KHALTI_SECRET_KEY')  # from Khalti sandbox docs
 KHALTI_RETURN_URL = "http://127.0.0.1:8000/payments/khalti/return/"
 KHALTI_WEBSITE_URL = "http://127.0.0.1:8000/"
