@@ -42,7 +42,6 @@ urlpatterns = [
     path("khalti/verify/", khalti_verify, name="khalti_verify"),
 
 
-
 ]
 
 if settings.DEBUG:
