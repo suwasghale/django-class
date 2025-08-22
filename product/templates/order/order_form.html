@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="min-h-screen flex items-center justify-center bg-gray-50">
+        <form method="POST" class="w-full max-w-xl p-6 bg-white rounded-lg shadow-md">
+            <h1 class="text-3xl font-bold mb-8 text-center text-slate-700">Shipping Info</h1>
+
+            {% if form.errors %}
+                <div class="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
+                    <strong>Error!</strong> Please correct the errors below.
+                </div>
+            {% endif %}
+
+            {% csrf_token %}
+            {{ form|crispy }}
+
+            <button type="submit"
+                    class="mt-6 bg-slate-800 hover:bg-slate-700 rounded-md text-white w-full py-2 px-4 transition">
+                Order
+            </button>
+        </form>
+    </div>
+{% endblock %}

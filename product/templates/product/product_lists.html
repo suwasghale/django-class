@@ -1,0 +1,35 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">🛍️ Product List</h1>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {% for product in products %}
+        <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-4 flex flex-col justify-between">
+
+          <div>
+            <img src="{{ product.image.url}}" alt="{{ product.product_name }}" class="rounded-md w-full h-48 object-contain mb-4 transition-transform duration-300 group-hover:scale-105" />
+
+            <h3 class="text-lg font-semibold text-gray-800 mb-2 line-clamp-1">
+              <a href="{% url 'product_details' product.id %}">
+                {{ product.product_name }}
+              </a>
+            </h3>
+            <p class="text-gray-600 text-sm mb-4">NRS. {{ product.product_price }}</p>
+          </div>
+
+           <!-- Quantity Selector -->
+          <form method ='POST' action="{% url 'add_to_cart' product.id %}">
+            {% csrf_token %}
+            <button class="w-full bg-gray-900 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-gray-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500">
+              <i class="bi bi-cart-fill text-base"></i>
+              <span>Add to Cart</span>
+            </button>
+          </form>
+
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

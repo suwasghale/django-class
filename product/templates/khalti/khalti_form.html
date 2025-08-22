@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container mt-5 px-6 sm:px-12">
+    <h2 class="mb-4 text-4xl font-bold text-red-700">Pay with Khalti</h2>
+
+    <div class="card shadow p-4">
+        <h5 class="font-bold text-xl underline">Order Summary</h5>
+        <p><strong>Order ID:</strong> {{ order.id }}</p>
+        <p><strong>Total Amount:</strong> Rs. {{ total_price }}</p>
+        <p><strong>Customer:</strong> {{ request.user.username }}</p>
+
+        <form method="POST" action="{{ payment_url }}">
+            {% csrf_token %}
+            <input type="hidden" name="pidx" value="{{ pidx }}">
+            <input type="hidden" name="purchase_order_id" value="{{ order.id }}">
+            <input type="hidden" name="purchase_order_name" value="Order-{{ order.id }}">
+            <input type="hidden" name="amount" value="{{ amount }}">
+            <input type="hidden" name="return_url" value="{{ return_url }}">
+            <input type="hidden" name="website_url" value="{{ website_url }}">
+
+            <button type="submit" class="cursor-pointer bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-gray-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2 px-4 border border-red-500 hover:border-transparent rounded">
+                Pay with Khalti
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

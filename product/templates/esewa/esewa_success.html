@@ -1,0 +1,42 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="flex flex-col items-center justify-center h-[80vh] text-center">
+    <!-- Success Icon -->
+    <div class="bg-green-100 p-6 rounded-full mb-6 animate-bounce">
+        <svg class="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12l2 2l4-4m6 2a9 9 0 11-18 0a9 9 0 0118 0z"/>
+        </svg>
+    </div>
+
+    <!-- Message -->
+    <h1 class="text-3xl font-bold text-green-700 mb-2">Payment Successful 🎉</h1>
+    <p class="text-gray-600 mb-6">Thank you for your purchase. Your order has been placed successfully.</p>
+
+    <!-- Redirect Notice -->
+    <p class="text-sm text-gray-500">Redirecting you to your orders page in <span id="countdown">5</span> seconds...</p>
+
+    <!-- Manual Redirect Button -->
+    <a href="{% url 'order_lists' %}" 
+       class="mt-6 bg-green-600 text-white px-6 py-2 rounded-lg shadow hover:bg-green-700 transition">
+        Go to My Orders
+    </a>
+</div>
+
+<!-- Redirect Script -->
+<script>
+    let countdown = 5;
+    const countdownElement = document.getElementById("countdown");
+    const redirectUrl = "{% url 'order_lists' %}";  // Update with your order page URL name
+
+    const timer = setInterval(() => {
+        countdown--;
+        countdownElement.textContent = countdown;
+        if (countdown <= 0) {
+            clearInterval(timer);
+            window.location.href = redirectUrl;
+        }
+    }, 1000);
+</script>
+{% endblock %}

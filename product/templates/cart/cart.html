@@ -1,0 +1,77 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+  <div class="max-w-7xl mx-auto px-4 py-16 pt-24">
+    <h1 class="text-3xl font-bold text-slate-600 mb-8">Shopping Cart</h1>
+
+  <!-- Grid Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+    <!-- Cart Items (Left) -->
+      <div class="lg:col-span-2 space-y-6">
+
+        {% for item in cart_items %}
+          <div class="flex items-center gap-6 border border-slate-200 rounded-lg p-5 shadow-sm hover:shadow-md transition bg-white relative">
+            <img src="{{item.product.image.url}}" alt="Product Image" class="w-28 h-28 rounded-lg object-cover" />
+
+            <div class="flex-1">
+              <h2 class="text-lg font-semibold text-slate-800">{{item.product.product_name}}</h2>
+              <div class="flex justify-between items-center mt-2">
+                <div>
+                  <p class="text-slate-500">Rs {{item.product.product_price}}</p>
+                  <p class="text-sm text-slate-500"><span class="mr-1">Quantity:</span>{{item.quantity}}</p>
+                </div>
+                <p class="text-slate-600">
+                  <span class="font-semibold text-slate-800">Total:</span> Rs {{item.total}}
+                </p>
+              </div>
+            </div>
+
+        <!-- Delete Button -->
+            <a href="{% url 'delete_from_cart' item.id %}"
+               class="absolute top-2 right-2 text-slate-400 hover:text-red-500 transition">
+              ✕
+            </a>
+          </div>
+        {% endfor %}
+
+      </div>
+
+    <!-- Order Summary (Right) -->
+      <div>
+        <div class="p-6 border border-slate-200 rounded-lg bg-white shadow-sm hover:shadow-md transition">
+          <h2 class="text-xl font-semibold text-slate-800 mb-4">Order Summary</h2>
+
+        <!-- Subtotal -->
+          <div class="flex justify-between mb-2">
+            <span class="text-slate-600">Subtotal</span>
+            <span class="text-slate-800 font-medium">Rs {{subtotal}}</span>
+          </div>
+
+        <!-- Shipping -->
+          <div class="flex justify-between mb-2">
+            <span class="text-slate-600">Shipping</span>
+            <span class="text-slate-800 font-medium">Rs 0</span>
+          </div>
+
+          <hr class="my-2 border-slate-300">
+
+        <!-- Total -->
+          <div class="flex justify-between mb-4">
+            <span class="text-slate-800 font-semibold text-lg">Total</span>
+            <span class="text-slate-800 font-semibold text-lg">Rs {{subtotal}}</span>
+          </div>
+
+        <!-- Proceed Button -->
+          <a href="{% url 'create_order' %}"
+             class="w-full bg-slate-800 text-white px-4 py-3 rounded-md hover:bg-slate-600 transition block text-center">
+            Proceed to Order
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+{% endblock %}
