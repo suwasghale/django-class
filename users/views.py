@@ -4,10 +4,12 @@ from django.contrib import messages
 from .forms import LoginForm
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.cache import cache_control
+from django.views.decorators.csrf import csrf_protect
 
 from .auth import redirect_if_logged_in
 
 # Create your views here.
+@csrf_protect
 @redirect_if_logged_in
 def register_view(request):
     if request.method == 'POST':
