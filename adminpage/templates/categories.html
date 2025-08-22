@@ -1,0 +1,52 @@
+{% extends 'dashboard_layout.html' %}
+
+{% block content %}
+  {% if messages %}
+    {% for message in messages%}
+      {% if 'success' in message.tags %}
+        <p class="text-green-600">{{message}}</p>
+      {% elif 'error' in message.tags %}
+        <p class="text-red-600">{{message}}</p>
+      {% else %}
+        <p class="text-yellow-600">{{message}}</p>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">Category List</h1>
+    <div class="overflow-x-auto bg-white rounded shadow">
+      <table class="min-w-full text-sm text-left text-gray-600">
+        <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
+          <tr>
+            <th class="px-6 py-3">#</th>
+            <th class="px-6 py-3">Category Name</th>
+            <th class="px-6 py-3">Created Date</th>
+            <th class="px-6 py-3">Updated Date</th>
+            <th class="px-6 py-3 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for category in categories %}
+            <tr class="border-b hover:bg-gray-50">
+              <td class="px-6 py-4"></td>
+              <td class="px-6 py-4">{{category.category_name}}</td>
+              <td class="px-6 py-4">{{category.created_date}}</td>
+              <td class="px-6 py-4">{{category.updated_date}}</td>
+              <td class="px-6 py-4 text-right">
+                <a href="{% url 'update_category' category.id %}">
+                  <button class="text-blue-500 hover:underline text-xs mr-2">Edit</button>
+                </a>
+                <a href="{% url 'delete_category' category.id %}">
+                  <button class="text-red-500 hover:underline text-xs">Delete</button>
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

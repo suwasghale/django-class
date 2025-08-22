@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Heroicons CDN -->
+    <script src="https://unpkg.com/feather-icons"></script>
+  </head>
+  <body class="bg-gray-100">
+
+    <div class="flex h-screen">
+
+  <!-- Sidebar (always visible) -->
+      <aside id="sidebar" class="w-64 bg-white shadow-lg p-4 space-y-6">
+        <h1 class="text-2xl font-bold text-blue-600 mb-4">Admin Panel</h1>
+
+        <nav class="space-y-2">
+
+          <a href="#" class="flex items-center gap-2 text-gray-700 hover:bg-gray-200 px-3 py-2 rounded">
+            <i data-feather="home"></i> Dashboard
+          </a>
+
+      <!-- Products Dropdown -->
+          <div>
+            <button onclick="toggleDropdown('productMenu')" class="flex items-center justify-between w-full text-gray-700 hover:bg-gray-200 px-3 py-2 rounded">
+              <span class="flex items-center gap-2">
+                <i data-feather="box"></i> Products
+              </span>
+              <i data-feather="chevron-down"></i>
+            </button>
+            <div id="productMenu" class="hidden ml-6 mt-1 space-y-1">
+              <a href="{% url 'add_product'%}" class="block text-sm text-gray-600 hover:text-blue-600">Add Product</a>
+              <a href="{% url 'dashboard_products' %}" class="block text-sm text-gray-600 hover:text-blue-600">
+                Product List
+              </a>
+            </div>
+          </div>
+
+      <!-- Categories Dropdown -->
+          <div>
+            <button onclick="toggleDropdown('categoryMenu')" class="flex items-center justify-between w-full text-gray-700 hover:bg-gray-200 px-3 py-2 rounded">
+              <span class="flex items-center gap-2">
+                <i data-feather="layers"></i> Categories
+              </span>
+              <i data-feather="chevron-down"></i>
+            </button>
+            <div id="categoryMenu" class="hidden ml-6 mt-1 space-y-1">
+              <a href="{% url 'add_category'%}" class="block text-sm text-gray-600 hover:text-blue-600">Add Category</a>
+              <a href="{% url 'dashboard_categories' %}" class="block text-sm text-gray-600 hover:text-blue-600">Category List</a>
+            </div>
+          </div>
+
+          <a href="#" class="flex items-center gap-2 text-gray-700 hover:bg-gray-200 px-3 py-2 rounded">
+            <i data-feather="users"></i> Users
+          </a>
+
+          <a href="#" class="flex items-center gap-2 text-gray-700 hover:bg-gray-200 px-3 py-2 rounded">
+            <i data-feather="shopping-cart"></i> Orders
+          </a>
+
+          <a href="#" class="flex items-center gap-2 text-gray-700 hover:bg-gray-200 px-3 py-2 rounded">
+            <i data-feather="settings"></i> Settings
+          </a>
+        </nav>
+
+    <!-- Logout Button -->
+        <div class="mt-10 border-t pt-4">
+          <a href="{% url 'logout_view' %}" class="flex items-center gap-2 text-red-600 hover:bg-red-50 px-3 py-2 rounded">
+            <i data-feather="log-out"></i> Logout
+          </a>
+        </div>
+      </aside>
+
+  <!-- Main Content -->
+      <main class="flex-1 p-6 overflow-y-auto">
+        {% block content %}
+
+        {% endblock %}
+      </main>
+    </div>
+
+<!-- JavaScript -->
+    <script>
+      function toggleDropdown(menuId) {
+        const menu = document.getElementById(menuId);
+        menu.classList.toggle("hidden");
+      }
+
+      feather.replace(); // Activate Feather Icons
+    </script>
+
+  </body>
+</html>
