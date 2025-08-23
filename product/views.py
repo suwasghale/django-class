@@ -27,6 +27,101 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.http import JsonResponse
 
+# stripe 
+import stripe
+from django.views.generic import TemplateView
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
+
+# stripe views
+import stripe
+from django.views.generic import TemplateView
+from django.views.decorators.csrf import csrf_exempt
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
+
+class StripeCheckoutView(View):
+    def post(self, request, pk):
+        """ Create Stripe Checkout Session """
+        order = get_object_or_404(Order, pk=pk, payment_status="Pending")
+
+        YOUR_DOMAIN = settings.KHALTI_WEBSITE_URL  # Use your domain (example: https://suwasghale.com)
+
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[
+                {
+                    'price_data': {
+                        'currency': 'usd',
+                        'product_data': {
+                            'name': f"Order-{order.pk}",
+                        },
+                        'unit_amount': int(order.total_price * 100),  # cents
+                    },
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',
+            success_url=YOUR_DOMAIN + reverse("stripe_success", args=[order.pk]),
+            cancel_url=YOUR_DOMAIN + reverse("stripe_cancel", args=[order.pk]),
+        )
+
+        order.gateway = "stripe"
+        order.gateway_ref = checkout_session.id
+        order.save(update_fields=["gateway", "gateway_ref"])
+
+        return redirect(checkout_session.url, code=303)
+
+
+class StripeSuccessView(TemplateView):
+    template_name = "stripe/stripe_success.html"
+
+    def get(self, request, pk, *args, **kwargs):
+        order = get_object_or_404(Order, pk=pk, user=request.user)
+        order.payment_status = "completed"
+        order.save(update_fields=["payment_status"])
+        return super().get(request, *args, **kwargs)
+
+
+class StripeCancelView(TemplateView):
+    template_name = "stripe/stripe_cancel.html"
+
+    def get(self, request, pk, *args, **kwargs):
+        order = get_object_or_404(Order, pk=pk, user=request.user)
+        order.payment_status = "failed"
+        order.save(update_fields=["payment_status"])
+        return super().get(request, *args, **kwargs)
+
+
+# Stripe Webhook (very important for security)
+@csrf_exempt
+def stripe_webhook(request):
+    payload = request.body
+    sig_header = request.META.get("HTTP_STRIPE_SIGNATURE")
+    event = None
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
+        )
+    except ValueError:
+        return HttpResponseBadRequest()
+    except stripe.error.SignatureVerificationError:
+        return HttpResponseBadRequest()
+
+    # Handle event types
+    if event["type"] == "checkout.session.completed":
+        session = event["data"]["object"]
+        order = Order.objects.filter(gateway_ref=session.get("id")).first()
+        if order:
+            order.payment_status = "completed"
+            order.save(update_fields=["payment_status"])
+
+    return JsonResponse({"status": "success"})
+
+
+
 # Create your views here.
 def products(request):
     product_lists = Product.objects.all().order_by('-id')[:8]
@@ -315,8 +410,14 @@ def create_order(request):
                     }
                     user_cart.delete()
                     return render(request, "khalti/khalti_form.html", context)
+                elif order.payment_method == "Stripe":
+                    user_cart.delete()
+                    context = {
+                        "order": order,
+                    }
+                    return render(request, "stripe/stripe_redirect.html", context)
 
-                return redirect('order_lists')
+            return redirect('order_lists')
     else:
         form = OrderForm()
     return render(request, "order/order_form.html ", {'form': form})

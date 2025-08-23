@@ -36,6 +36,7 @@ class Order(models.Model):
         ('Cash on Delivery', 'Cash on Delivery'),
         ('Esewa', 'Esewa'),
         ('Khalti', 'Khalti'),
+        ('Stripe', 'Stripe')
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)

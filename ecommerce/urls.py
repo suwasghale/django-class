@@ -20,6 +20,10 @@ from .views import *
 from product.views import esewa_success, esewa_failure, KhaltiInitView, khalti_return, khalti_verify
 # only for debugging purposes
 
+from product.views import (
+    StripeCheckoutView, StripeSuccessView, StripeCancelView, stripe_webhook
+)
+
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -37,9 +41,16 @@ urlpatterns = [
     path('esewa/success/<int:order_id>/', esewa_success, name='esewa_success'),
     path('esewa/failure/', esewa_failure, name='esewa_failure'),
 
+    # khalti
     path("khalti/<int:pk>/init/", KhaltiInitView.as_view(), name="khalti_init"),
     path("payments/khalti/return/", khalti_return, name="khalti_return"),
     path("khalti/verify/", khalti_verify, name="khalti_verify"),
+
+    # stripe
+    path("stripe/checkout/<int:pk>/", StripeCheckoutView.as_view(), name="stripe_checkout"),
+    path("stripe/success/<int:pk>/", StripeSuccessView.as_view(), name="stripe_success"),
+    path("stripe/cancel/<int:pk>/", StripeCancelView.as_view(), name="stripe_cancel"),
+    path("stripe/webhook/", stripe_webhook, name="stripe_webhook"),
 
 
 ]

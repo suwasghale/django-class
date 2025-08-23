@@ -154,4 +154,9 @@ ESEWA_MERCHANT_ID = "EPAYTEST"  # Test merchant ID, replace in production
 KHALTI_IS_SANDBOX = True  # True = dev sandbox, False = live
 KHALTI_SECRET_KEY = config('KHALTI_SECRET_KEY')  # from Khalti sandbox docs
 KHALTI_RETURN_URL = "http://127.0.0.1:8000/payments/khalti/return/"
-KHALTI_WEBSITE_URL = "http://127.0.0.1:8000/"
+KHALTI_WEBSITE_URL = "http://127.0.0.1:8000"
+
+# stripe
+STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY")
+STRIPE_PUBLISHABLE_KEY = config("STRIPE_PUBLISHABLE_KEY")
+STRIPE_WEBHOOK_SECRET = config("STRIPE_WEBHOOK_SECRET", default=None)
