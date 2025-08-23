@@ -1,0 +1,6 @@
+<form id="stripe-form" method="post" action="{% url 'stripe_checkout' order.pk %}">
+    {% csrf_token %}
+</form>
+<script>
+    document.getElementById('stripe-form').submit();
+</script>

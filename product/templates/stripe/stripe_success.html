@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container mt-5 text-center">
+    <h2 class="text-success">✅ Payment Successful!</h2>
+    <p>Your order has been placed successfully.</p>
+    <p>You will receive an email confirmation shortly.</p>
+    <p class="mb-8">Thank you for shopping with us!</p>
+    <a href="{% url 'order_lists' %}" class="mt-8 bg-blue-500 px-4 py-2 text-white rounded-md">View My Orders</a>
+</div>
+{% endblock %}

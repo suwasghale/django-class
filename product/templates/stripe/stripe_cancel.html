@@ -1,0 +1,8 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container mt-5 text-center">
+    <h2 class="text-danger">❌ Payment Cancelled</h2>
+    <p>Your payment was not completed. Please try again.</p>
+    <a href="{% url 'create_order' %}" class="px-4 py-2 bg-red-500 text-white rounded-md">Back to Orders</a>
+</div>
+{% endblock %}
