@@ -277,11 +277,45 @@ def create_order(request):
                         }
                     return render(request, 'esewa/esewa_form.html', context)
 
+                elif order.payment_method == "Khalti":
+                    user_cart.delete()  # ✅ move cart delete here before response
 
-                elif order.payment_method == 'Khalti':
-                    return redirect('khalti_init', pk=order.pk)
-                
-                user_cart.delete()
+                    payload = {
+                        "return_url": settings.KHALTI_RETURN_URL,
+                        "website_url": settings.KHALTI_WEBSITE_URL,
+                        "amount": int(order.total_price * 100),
+                        "purchase_order_id": str(order.pk),
+                        "purchase_order_name": f"Order-{order.pk}",
+                        "customer_info": {
+                            "name": request.user.username,
+                            "email": getattr(request.user, "email", "") or "customer@example.com",
+                            "phone": "9800000000",
+                        },
+                    }
+
+                    res = khalti_initiate(payload)
+                    pidx = res.get("pidx")
+                    payment_url = res.get("payment_url")
+
+                    if not pidx or not payment_url:
+                        return HttpResponseBadRequest(f"Khalti initiate failed: {res}")
+
+                    order.gateway = "Khalti"
+                    order.gateway_ref = pidx
+                    order.save(update_fields=["gateway", "gateway_ref"])
+
+                    order.refresh_from_db()  # ✅ ensures items are loaded fresh
+
+                    context = {
+                        "order": order,
+                        "pidx": pidx,
+                        "payment_url": payment_url,
+                        "amount": int(order.total_price * 100),
+                        "total_price": order.total_price,
+                    }
+                    user_cart.delete()
+                    return render(request, "khalti/khalti_form.html", context)
+
                 return redirect('order_lists')
     else:
         form = OrderForm()
